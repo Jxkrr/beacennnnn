@@ -603,50 +603,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
   </script>
 
-
-export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  
-  try {
-    const KV_REST_API_URL = process.env.KV_REST_API_URL;
-    const KV_REST_API_TOKEN = process.env.KV_REST_API_TOKEN;
-    
-    // Get current value first
-    const getResponse = await fetch(`${KV_REST_API_URL}/get/page-views`, {
-      headers: {
-        Authorization: `Bearer ${KV_REST_API_TOKEN}`,
-      },
-    });
-    
-    const currentData = await getResponse.json();
-    
-    // If no value exists, set it to a starting number (e.g., 7896)
-    if (currentData.result === null) {
-      await fetch(`${KV_REST_API_URL}/set/page-views/7896`, {
-        headers: {
-          Authorization: `Bearer ${KV_REST_API_TOKEN}`,
-        },
-      });
-    }
-    
-    // Now increment
-    const response = await fetch(`${KV_REST_API_URL}/incr/page-views`, {
-      headers: {
-        Authorization: `Bearer ${KV_REST_API_TOKEN}`,
-      },
-    });
-    
-    const data = await response.json();
-    const views = data.result;
-    
-    return res.status(200).json({ views, success: true });
-  } catch (error) {
-    return res.status(500).json({ 
-      error: error.message, 
-      success: false 
-    });
-  }
-}
     
 </body>
 
