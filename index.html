@@ -77,6 +77,44 @@ a, button, .linkedAccountsRedirect svg, .popup-button {
 <div id="background-layer-1" class="background-layer"></div> -->
 
 <body profile="" style="font-family: Satoshi, sans-serif; cursor: url('img/extralsmall.png'), auto; background-color: #222222;">
+    
+    <!-- ============================================ -->
+    <!-- RANDOM MEDIA SELECTION - LOADS FIRST -->
+    <!-- ============================================ -->
+    <script>
+    // Define your media sets here
+    const mediaSets = [
+        {
+            video: 'img/1.mp4',
+            videoFallback: 'img/1.mp4',
+            audio: 'img/1.mp3',
+            duration: '0:25' // Update this to match the actual duration
+        },
+        {
+            video: 'img/2.mp4',
+            videoFallback: 'img/2.mp4',
+            audio: 'img/2.mp3',
+            duration: '0:56' // Update this to match the actual duration
+        },
+    
+        {
+             video: 'img/3.mp4',
+             videoFallback: 'img/3.mp4',
+            audio: 'img/3.mp3',
+            duration: '0:24'
+        }
+    ];
+    
+    // Randomly select a media set
+    const randomIndex = Math.floor(Math.random() * mediaSets.length);
+    const selectedMedia = mediaSets[randomIndex];
+    
+    console.log(`🎵 Selected media set ${randomIndex + 1}:`, selectedMedia);
+    
+    // Make selected media info available globally
+    window.selectedMedia = selectedMedia;
+    </script>
+    
     <!-- Este código deve ser adicionado ao seu HTML existente -->
     <div class="popup-overlay" id="redirect-popup">
         <div class="popup-container">
@@ -92,8 +130,7 @@ a, button, .linkedAccountsRedirect svg, .popup-button {
     <div class="video-container">
         <div class="placeholder" style="background-image: url('img/placeholder.png');"></div>
         <video style="filter: contrast(1.2);" class="background" autoplay muted loop preload="auto" disablePictureInPicture>
-            <source src="https://0ewhfnzch7egqwge.public.blob.vercel-storage.com/lol.mp4" type="video/mp4">
-            <source src="img/lol.mp4" type="video/mp4">
+            <!-- Sources will be set dynamically by JavaScript -->
         </video>
     </div>
     
@@ -346,8 +383,8 @@ a, button, .linkedAccountsRedirect svg, .popup-button {
 
             </div>
         </div>
-        <!-- <audio id="rainBackground" src="img/praiafake.mp3" preload="auto"></audio> -->
-        <audio class="audioPlayer" src="img/lol.mp3"></audio>
+        <!-- Audio will be set dynamically -->
+        <audio class="audioPlayer"></audio>
     </div>
 </div>
 
@@ -355,6 +392,37 @@ a, button, .linkedAccountsRedirect svg, .popup-button {
 </div>
 
     <script src="js/cur-snow.js"></script>
+    
+    <!-- Apply the randomly selected media to video and audio elements -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const video = document.querySelector('.background');
+        const audioPlayer = document.querySelector('.audioPlayer');
+        const totalTimeSpan = document.querySelector('.total-time');
+        
+        // Apply the selected media
+        if (video && window.selectedMedia) {
+            video.innerHTML = `
+                <source src="${window.selectedMedia.video}" type="video/mp4">
+                <source src="${window.selectedMedia.videoFallback}" type="video/mp4">
+            `;
+            video.load();
+            console.log('✅ Video source set:', window.selectedMedia.video);
+        }
+        
+        if (audioPlayer && window.selectedMedia) {
+            audioPlayer.src = window.selectedMedia.audio;
+            audioPlayer.load();
+            console.log('✅ Audio source set:', window.selectedMedia.audio);
+        }
+        
+        if (totalTimeSpan && window.selectedMedia) {
+            totalTimeSpan.textContent = window.selectedMedia.duration;
+            console.log('✅ Duration set:', window.selectedMedia.duration);
+        }
+    });
+    </script>
+    
     <script>
 // Código do container com animações otimizadas
 const container = document.getElementById('container');
@@ -500,7 +568,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const rainAudio = document.querySelector('audio[src="img/praiafake.mp3"]');
     
     if (!rainAudio) {
-        console.error('Elemento de áudio da chuva não encontrado');
+        console.log('Rain audio element not found - skipping');
         return;
     }
     
